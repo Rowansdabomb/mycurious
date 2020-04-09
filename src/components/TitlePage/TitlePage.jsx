@@ -1,25 +1,21 @@
 import React from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import FullPage from './FullPage';
-import TextField from '@material-ui/core/TextField';
-import { TITLE_PAGE_ID } from '../utils/ids';
-import chantrelleBackground from '../assets/chantrelleHero.jpg';
-import useMailingList from './Firestore/useMailingList';
 
-const useStyles = makeStyles((theme) =>{ console.log(theme); return ({
+import Typography from '@material-ui/core/Typography';
+import FullPage from '../FullPage';
+import TextField from '@material-ui/core/TextField';
+import { TITLE_PAGE_ID } from '../../utils/ids';
+import chantrelleBackground from '../../assets/chantrelleHero.jpg';
+import useMailingList from '../Firestore/useMailingList';
+import useDesktopBreakpoint from '../useDesktopBreakpoint';
+import JoinMailingListButton from './JoinMailingListButton';
+import { desktopBreakpoint } from '../../theme';
+
+
+const useStyles = makeStyles((theme) => ({
   adornedEnd: {
     paddingRight: 0,
     height: 56,
-  },
-  button: {
-    whiteSpace: 'nowrap',
-    height: '100%',
-    color: theme.palette.text.light,
-    '&:hover': {
-      backgroundColor: theme.palette.background.hover,
-    }
   },
   container: {
     display: 'flex',
@@ -33,22 +29,14 @@ const useStyles = makeStyles((theme) =>{ console.log(theme); return ({
     display: 'inline-block',
     color: theme.palette.text.light,
     padding: theme.spacing(4),
+    width: '100%',
+    maxWidth: theme.breakpoints.values.sm,
     backgroundColor: theme.palette.background.hover,
   },
   notchedOutline: {
     borderColor: theme.palette.text.light,
     '&:hover': {
       borderColor: `${theme.palette.text.lightHover} !important`,
-    }
-  },
-  endAdornment: {
-    position: 'relative',
-    borderLeft: `1px solid ${theme.palette.text.light}`,
-    height: '100%',
-  },
-  inputRoot: {
-    '&:hover': {
-      borderColor: 'red',
     }
   },
   title: {
@@ -67,6 +55,9 @@ const useStyles = makeStyles((theme) =>{ console.log(theme); return ({
     },
     '& .MuiInputBase-input': {
       color: theme.palette.text.lightHover,
+      [theme.breakpoints.up(desktopBreakpoint)]: {
+        borderRight: `1px solid ${theme.palette.text.light}`,
+      },
     },
     '& label.Mui-focused': {
       color: theme.palette.text.lightHover,
@@ -85,27 +76,31 @@ const useStyles = makeStyles((theme) =>{ console.log(theme); return ({
         borderColor: theme.palette.text.lightHover,
       },
     },
+    '& .MuiFormHelperText-root': {
+      color: theme.palette.text.light,
+    },
   },
-})});
+}));
 
 
 const TitlePage = React.forwardRef(({ children }, ref) => {
+  const desktopSized = useDesktopBreakpoint();
   const classes = useStyles();
-  const { addEmail, loading, error: mailingError } = useMailingList();
+  const { addEmail, loading, status, clearStatus } = useMailingList();
   const [email, setEmail] = React.useState('');
-  const [error, setError] = React.useState(null);
+  const [blankError, setBlankError] = React.useState(null);
 
   const handleSubmit = React.useCallback(() => {
     if (email == null || email.length === 0) {
-      setError('This field cannot be left blank')
+      setBlankError('This field cannot be left blank')
     } else {
-      setError(null);
-      console.log(email)
+      setBlankError(null);
+      clearStatus();
       addEmail(email);
-      // TODO: add email to a mailing list
     }
-  }, [addEmail, email]);
+  }, [addEmail, clearStatus, email]);
 
+  console.log(status, status && status.startsWith('Thanks'));
   const inputProps = React.useMemo(() => ({
     classes: { 
       root: classes.inputRoot,
@@ -113,15 +108,31 @@ const TitlePage = React.forwardRef(({ children }, ref) => {
       notchedOutline: classes.notchedOutline,
     },
     endAdornment: (
-      <div className={classes.endAdornment}>
-        <Button variant="text" onClick={handleSubmit} className={classes.button}>
-          Join mailing list
-        </Button>
-      </div>
+      <JoinMailingListButton 
+        onClick={handleSubmit} 
+        loading={loading} 
+        addAnother={status && status.startsWith('Thanks!')}
+      />
     ),
-  }), [classes, handleSubmit])
+  }), [classes, handleSubmit, loading, status])
 
-  console.log(mailingError)
+  const helperText = React.useMemo(() => {
+    if (blankError) {
+      return (
+        <Typography variant="subtitle1">
+          This email doesn't look right
+        </Typography>
+      )
+    }
+    if (status) {
+      return (
+        <Typography variant="subtitle1">
+          {status}
+        </Typography>
+      )
+    }
+    return null;
+  }, [blankError, status])
 
   return (
     <FullPage 
@@ -131,7 +142,7 @@ const TitlePage = React.forwardRef(({ children }, ref) => {
     >
       <div className={classes.container}>
         <div className={classes.centerBox}>
-          <Typography variant="h1" className={classes.title}>
+          <Typography variant="h1" className={classes.title} align="center">
             Mycurious
           </Typography>
           <Typography variant="subtitle1" className={classes.subtitle}>
@@ -142,13 +153,19 @@ const TitlePage = React.forwardRef(({ children }, ref) => {
             autoComplete="email"
             variant="outlined"
             label="Email"
-            error={error}
-            helperText={error || mailingError}
+            helperText={helperText}
             value={email}
             onChange={e => setEmail(e.target.value)}
             className={classes.textField}
-            InputProps={inputProps}
+            InputProps={desktopSized && inputProps}
           />
+          { !desktopSized && (
+            <JoinMailingListButton 
+              loading={loading} 
+              onClick={handleSubmit} 
+              addAnother={status && status.startsWith('Thanks!')} 
+            />
+          )}
         </div>
       </div>
     </FullPage>

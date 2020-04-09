@@ -6,21 +6,13 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import cn from 'classnames';
-
-import CriminiIcon from '../assets/criminiIcon.png';
-import ChantrelleIcon from '../assets/chantrelleIcon.png';
-import KingOysterIcon from '../assets/kingOysterIcon.png';
-
 import makeStyles from '@material-ui/styles/makeStyles';
-import { CONTACT_PAGE_ID, ABOUT_PAGE_ID, TITLE_PAGE_ID } from '../utils/ids';
+import cn from 'classnames';
+import { links } from './util';
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
-  colorDefault: {
-    backgroundColor: 'red',
-  },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
@@ -41,6 +33,7 @@ const useStyles = makeStyles(theme => ({
     }
   },
   selected: {
+    color: theme.palette.secondary.main,
     background: theme.palette.background.hover,
   },
   listItemText: {
@@ -48,29 +41,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const links = [
-  {
-    alt: 'crimini',
-    src: CriminiIcon,
-    title: 'Home',
-    id: TITLE_PAGE_ID,
-  },
-  {
-    alt: 'chantrelle',
-    src: ChantrelleIcon,
-    title: 'About',
-    id: ABOUT_PAGE_ID
-  },
-  {
-    alt: 'king oyster',
-    src: KingOysterIcon,
-    title: 'Contact',
-    id: CONTACT_PAGE_ID,
-  },
-]
-
 export default function SiteDrawer({ onClick, currentId }) {
-  console.log(currentId)
   const classes = useStyles();
 
   return (
@@ -94,10 +65,9 @@ export default function SiteDrawer({ onClick, currentId }) {
               [classes.selected]: currentId === id,
             })}
             onClick={() => onClick(id)} 
-            
           >
             <ListItemAvatar>
-              <Avatar alt={alt} src={src} classes={{ colorDefault: classes.colorDefault }}/>
+              <Avatar alt={alt} src={src}/>
             </ListItemAvatar>
             <ListItemText primary={title} className={classes.listItemText} />
           </ListItem>

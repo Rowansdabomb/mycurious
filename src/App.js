@@ -4,10 +4,11 @@ import './App.css';
 import find from 'lodash/find';
 import get from 'lodash/get';
 
-import SiteDrawer from './components/SiteDrawer';
-import TitlePage from './components/TitlePage';
+import SiteNav from './components/Nav/SiteNav';
+import TitlePage from './components/TitlePage/TitlePage';
 import AboutPage from './components/AboutPage';
 import ContactPage from './components/ContactPage';
+import Footer from './components/Footer';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import ThemeProvider from '@material-ui/styles/ThemeProvider';
@@ -18,6 +19,11 @@ import Div100vh from 'react-div-100vh';
 function App() {
   const [refs, setRefs] = React.useState([]);
   const [currentSectionId, setCurrentSectionId] = React.useState(null);
+  console.log(currentSectionId);
+
+  React.useEffect(() => {
+    window.MUItheme = theme;
+  }, [])
 
   React.useEffect(() => {
     let unsubscribe = window.addEventListener('scroll', (e) => {
@@ -32,7 +38,6 @@ function App() {
           setCurrentSectionId(id);
         }
       })
-      console.log('');
     }, [setCurrentSectionId])
 
     return () => {
@@ -43,7 +48,6 @@ function App() {
           unsubscribe.detachEvent('scroll');
         }
       }
-
     }
   }, [currentSectionId, refs])
 
@@ -62,11 +66,13 @@ function App() {
     <ThemeProvider theme={theme}>
       <Div100vh style={{display: 'flex', flexDirection: 'column' }} >
         <CssBaseline />
-        <SiteDrawer onClick={handleScrollTo} currentId={currentSectionId} />
+        <SiteNav onChange={handleScrollTo} currentId={currentSectionId} />
+
         <div id="scroll-container">
           <TitlePage ref={refCallback} />
           <AboutPage ref={refCallback} />
           <ContactPage ref={refCallback} />
+          <Footer />
         </div>
       </Div100vh>
     </ThemeProvider>

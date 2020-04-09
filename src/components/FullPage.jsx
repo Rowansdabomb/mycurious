@@ -2,7 +2,6 @@ import React from 'react';
 import Div100vh from 'react-div-100vh'
 import makeStyles from '@material-ui/styles/makeStyles';
 import Container from '@material-ui/core/Container';
-import Divider from '@material-ui/core/Divider';
 import cn from 'classnames';
 import { Typography } from '@material-ui/core';
 
@@ -27,8 +26,14 @@ const FullPage = React.forwardRef(({ children, id, centerAll, image }, ref) => {
   const classes = useStyles();
 
   const { url, credits } = image || {};
+  const style = { 
+    backgroundImage: `url(${url})`, 
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+  };
+
   return (
-    <div id={id} ref={ref} style={{ backgroundImage: `url(${url})`, backgroundSize: 'cover'}}>
+    <div id={id} ref={ref} style={style}>
       <Div100vh>
         <Container 
           maxWidth="md" 
@@ -46,7 +51,6 @@ const FullPage = React.forwardRef(({ children, id, centerAll, image }, ref) => {
             </Typography>
           </div>
         )}
-        <Divider />
       </Div100vh>
     </div>
   )
