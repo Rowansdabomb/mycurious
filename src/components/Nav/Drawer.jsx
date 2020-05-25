@@ -28,6 +28,7 @@ const useStyles = makeStyles(theme => ({
     borderRight: 'none',
   },
   item:{
+    backgroundColor: theme.palette.background.lightTransparent,
     '&:hover': {
       backgroundColor: theme.palette.background.hover,
     }

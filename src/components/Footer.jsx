@@ -28,7 +28,7 @@ export default function Footer() {
   return (
     <div className={classes.footer}>
       <Typography variant="body1" color="textSecondary" className={classes.heartWrapper}>
-        {`Made with  `}<FavoriteBorderIcon className={classes.icon}/>
+        {`Made with  `}<FavoriteBorderIcon className={classes.icon} fontSize="inherit" />
       </Typography>
       <Typography variant="subtitle1" color="textSecondary">
         {new Date().getFullYear()}

@@ -2,36 +2,22 @@ import React from 'react';
 import makeStyles from '@material-ui/styles/makeStyles';
 
 import Typography from '@material-ui/core/Typography';
-import FullPage from '../FullPage';
+import Page from '../Page';
 import TextField from '@material-ui/core/TextField';
 import { TITLE_PAGE_ID } from '../../utils/ids';
 import chantrelleBackground from '../../assets/chantrelleHero.jpg';
 import useMailingList from '../Firestore/useMailingList';
 import useDesktopBreakpoint from '../useDesktopBreakpoint';
 import JoinMailingListButton from './JoinMailingListButton';
+import CenterBox from '../CenterBox';
 import { desktopBreakpoint } from '../../theme';
+import HeroImage from '../HeroImage';
 
 
 const useStyles = makeStyles((theme) => ({
   adornedEnd: {
     paddingRight: 0,
     height: 56,
-  },
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '100%',
-    width: '100%',
-  },
-  centerBox: {
-    display: 'inline-block',
-    color: theme.palette.text.light,
-    padding: theme.spacing(4),
-    width: '100%',
-    maxWidth: theme.breakpoints.values.sm,
-    backgroundColor: theme.palette.background.hover,
   },
   notchedOutline: {
     borderColor: theme.palette.text.light,
@@ -100,7 +86,6 @@ const TitlePage = React.forwardRef(({ children }, ref) => {
     }
   }, [addEmail, clearStatus, email]);
 
-  console.log(status, status && status.startsWith('Thanks'));
   const inputProps = React.useMemo(() => ({
     classes: { 
       root: classes.inputRoot,
@@ -135,40 +120,47 @@ const TitlePage = React.forwardRef(({ children }, ref) => {
   }, [blankError, status])
 
   return (
-    <FullPage 
+    <Page 
       id={TITLE_PAGE_ID} 
       ref={ref} 
       image={{ url: chantrelleBackground, credits: 'Photo by Irina Iriser from Pexels'}}
+      hero={
+        <HeroImage      
+          position="center" 
+          image={{ url: chantrelleBackground, credits: 'Photo by Irina Iriser from Pexels'}}
+        />
+      }
     >
-      <div className={classes.container}>
-        <div className={classes.centerBox}>
-          <Typography variant="h1" className={classes.title} align="center">
-            Mycurious
-          </Typography>
-          <Typography variant="subtitle1" className={classes.subtitle}>
-            A new book by rosi "da mushroom" hunter
-          </Typography>
-          <TextField 
-            fullWidth
-            autoComplete="email"
-            variant="outlined"
-            label="Email"
-            helperText={helperText}
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            className={classes.textField}
-            InputProps={desktopSized && inputProps}
+      <CenterBox>
+        <Typography variant="h1" className={classes.title} align="center">
+          Mycurious
+        </Typography>
+        <Typography variant="subtitle1" className={classes.subtitle}>
+          A book by rosi hunter
+        </Typography>
+        <Typography variant="body1" align="center" gutterBottom >
+          Be the first to know when the book is available
+        </Typography>
+        <TextField 
+          fullWidth
+          autoComplete="email"
+          variant="outlined"
+          label="Email"
+          helperText={helperText}
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          className={classes.textField}
+          InputProps={desktopSized ? inputProps : undefined}
+        />
+        { !desktopSized && (
+          <JoinMailingListButton 
+            loading={loading} 
+            onClick={handleSubmit} 
+            addAnother={status && status.startsWith('Thanks!')} 
           />
-          { !desktopSized && (
-            <JoinMailingListButton 
-              loading={loading} 
-              onClick={handleSubmit} 
-              addAnother={status && status.startsWith('Thanks!')} 
-            />
-          )}
-        </div>
-      </div>
-    </FullPage>
+        )}
+      </CenterBox>
+    </Page>
   )
 })
 

@@ -2,12 +2,13 @@ import React from 'react';
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import { Avatar } from '@material-ui/core';
+import Avatar from '@material-ui/core/Avatar';
 import { links } from './util';
-import { makeStyles } from '@material-ui/styles';
+import makeStyles from '@material-ui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
   container: {
+    zIndex: theme.zIndex.appBar,
     position: 'fixed',
     top: 0,
     left: 0,
@@ -16,6 +17,7 @@ const useStyles = makeStyles(theme => ({
   },
   root: {
     color: theme.palette.text.light,
+    backgroundColor: theme.palette.background.lightTransparent,
     '&:hover': {
       backgroundColor: theme.palette.background.hover,
     }

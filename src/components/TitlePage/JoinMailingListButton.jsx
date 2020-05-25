@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up(desktopBreakpoint)]: {
       width: 'auto',
       height: '100%',
+      marginTop: 0,
     },
   },
   button: {
@@ -37,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function JoinMailingListButton({ loading, onClick, addAnother}) {
   const desktopSized = useDesktopBreakpoint();
-  console.log('add',addAnother);
   const classes = useStyles();
   return (
     <div className={classes.buttonContainer}>
@@ -48,7 +48,7 @@ export default function JoinMailingListButton({ loading, onClick, addAnother}) {
         onClick={onClick} 
         className={classes.button}
       >
-        {addAnother ? 'Add another email' : 'Join mailing list'}
+        {addAnother ? 'Add another email' : 'Add Email'}
       </Button>
     </div>
   );
